@@ -1,1 +1,353 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Udaanloan App - Payment</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 18px 12px;
+  background: #f2f5fa;
+  color: #202532;
+  font-family: Arial, sans-serif;
+}
+
+.card {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 22px 18px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 5px 22px #00000012;
+}
+
+.brand {
+  text-align: center;
+  color: #1769df;
+  font-size: 27px;
+  font-weight: 800;
+}
+
+.subtitle {
+  text-align: center;
+  color: #687386;
+  margin: 7px 0 20px;
+  font-size: 14px;
+}
+
+.details {
+  background: #f7f9fc;
+  border: 1px solid #e4e9f1;
+  border-radius: 12px;
+  padding: 15px;
+}
+
+.line {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 9px 0;
+  overflow-wrap: anywhere;
+}
+
+.amount {
+  color: #159447;
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.timer {
+  margin: 17px 0;
+  text-align: center;
+  color: #d34343;
+  font-weight: bold;
+}
+
+#qr {
+  display: flex;
+  justify-content: center;
+  margin: 15px auto;
+}
+
+#qr img, #qr canvas {
+  width: 175px;
+  height: 175px;
+  max-width: 100%;
+}
+
+.hint {
+  color: #687386;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.upi-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #edf1f6;
+  border-radius: 9px;
+  padding: 8px;
+  margin: 16px 0;
+}
+
+#upiText {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+}
+
+button, .pay {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-radius: 9px;
+  padding: 13px;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+}
+
+.copy {
+  width: auto;
+  padding: 10px 12px;
+  background: #1769df;
+  color: white;
+}
+
+.pay {
+  background: #159447;
+  color: white;
+  text-decoration: none;
+  margin-bottom: 12px;
+}
+
+.section {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e9f0;
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: bold;
+  margin: 12px 0 7px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd3df;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+.submit {
+  margin-top: 14px;
+  background: #1769df;
+  color: white;
+}
+
+.notice {
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 9px;
+  background: #fff6df;
+  color: #785400;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+#status {
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.footer {
+  margin-top: 18px;
+  text-align: center;
+  color: #788293;
+  font-size: 11px;
+  line-height: 1.5;
+}
+</style>
+</head>
+
+<body>
+<main class="card">
+
+  <div class="brand">Udaanloan App</div>
+  <div class="subtitle">Payment Request</div>
+
+  <div class="details">
+    <div class="line">
+      <strong>Customer</strong>
+      <span id="customer">Customer</span>
+    </div>
+    <div class="line">
+      <strong>Amount</strong>
+      <span class="amount">₹<span id="amount">5500</span></span>
+    </div>
+  </div>
+
+  <div class="timer">
+    Link timer: <span id="timer">10:00</span>
+  </div>
+
+  <div id="qr"></div>
+  <div class="hint">
+    Scan with a supported UPI app and verify the recipient
+    name and amount before paying.
+  </div>
+
+  <div class="upi-box">
+    <span id="upiText">BHARATPE2M0G0I7C4G46636@unitype</span>
+    <button class="copy" id="copyBtn" type="button">
+      Copy UPI
+    </button>
+  </div>
+
+  <a class="pay" id="payLink" href="#">
+    Pay via UPI
+  </a>
+
+  <div class="section">
+    <strong>Submit payment details</strong>
+
+    <form id="paymentForm">
+      <label for="utr">UTR / Transaction reference</label>
+      <input id="utr" name="utr" required
+        maxlength="80" autocomplete="off"
+        placeholder="Enter your transaction reference">
+
+      <label for="receipt">Payment screenshot</label>
+      <input id="receipt" name="receipt" type="file"
+        accept="image/*">
+
+      <button class="submit" type="submit">
+        Review submission
+      </button>
+    </form>
+
+    <div id="status" role="status"></div>
+
+    <div class="notice">
+      After submission, payment verification may take 5–10
+      minutes. This page does not transmit or save your UTR
+      or screenshot to the company system. Please submit them
+      through the company's approved channel for verification.
+    </div>
+  </div>
+
+  <div class="footer">
+    Please verify the recipient and amount before payment.
+    Payment status is confirmed only after verification.
+  </div>
+
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const params = new URLSearchParams(location.search);
+
+const UPI = "BHARATPE2M0G0I7C4G46636@unitype";
+const APP_NAME = "Udaanloan App";
+const customer = params.get("name") || "Customer";
+const amount = Number(params.get("amount") || "5500");
+const minutes = Math.max(
+  1, Math.min(60, Number(params.get("minutes") || "10"))
+);
+
+document.getElementById("customer").textContent = customer;
+document.getElementById("amount").textContent =
+  Number.isFinite(amount) && amount > 0
+    ? amount.toLocaleString("en-IN", {maximumFractionDigits: 2})
+    : "5500";
+document.getElementById("upiText").textContent = UPI;
+
+const safeAmount = Number.isFinite(amount) && amount > 0
+  ? amount.toFixed(2) : "5500.00";
+
+const upiURL = "upi://pay?pa=" + encodeURIComponent(UPI) +
+  "&pn=" + encodeURIComponent(APP_NAME) +
+  "&am=" + encodeURIComponent(safeAmount) +
+  "&cu=INR";
+
+document.getElementById("payLink").href = upiURL;
+
+if (window.QRCode) {
+  new QRCode(document.getElementById("qr"), {
+    text: upiURL,
+    width: 175,
+    height: 175,
+    correctLevel: QRCode.CorrectLevel.M
+  });
+} else {
+  document.getElementById("qr").textContent =
+    "QR unavailable. Please use the UPI ID.";
+}
+
+document.getElementById("copyBtn").addEventListener("click", async () => {
+  const status = document.getElementById("status");
+  try {
+    await navigator.clipboard.writeText(UPI);
+    status.textContent = "UPI ID copied.";
+  } catch {
+    status.textContent = "Please copy the UPI ID manually: " + UPI;
+  }
+});
+
+let seconds = minutes * 60;
+const timer = document.getElementById("timer");
+const payLink = document.getElementById("payLink");
+
+function tick() {
+  timer.textContent =
+    String(Math.floor(seconds / 60)).padStart(2, "0") + ":" +
+    String(seconds % 60).padStart(2, "0");
+
+  if (seconds <= 0) {
+    clearInterval(countdown);
+    timer.textContent = "00:00";
+    payLink.style.opacity = "0.5";
+    payLink.style.pointerEvents = "none";
+    payLink.textContent = "Timer expired";
+    return;
+  }
+  seconds--;
+}
+
+tick();
+const countdown = setInterval(tick, 1000);
+
+document.getElementById("paymentForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  const utr = document.getElementById("utr").value.trim();
+  const file = document.getElementById("receipt").files[0];
+  const status = document.getElementById("status");
+
+  if (!utr) {
+    status.textContent = "Please enter the transaction reference.";
+    return;
+  }
+
+  status.textContent =
+    "Details entered on this page, but NOT sent or saved. " +
+    "Please submit the UTR and screenshot through your company's " +
+    "approved channel. Payment is not yet verified.";
+});
+</script>
+</body>
+  </html>
